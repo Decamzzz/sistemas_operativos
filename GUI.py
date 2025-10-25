@@ -13,13 +13,17 @@ from PySide6.QtWidgets import (
     QTableWidgetItem,
     QLabel)
 from PySide6.QtCore import Qt
-from PySide6.QtCore import QItemSelectionModel
+from PySide6.QtCore import QItemSelectionModel, QTimer
 
 class Simulador(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Simulador de procesos")
         #self.setFixedSize(800, 600)
+        
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.simulation_tick)
+        self.counter_test = 0
         
         self.layout_main = QHBoxLayout()
         
@@ -30,9 +34,13 @@ class Simulador(QWidget):
         self.add_process_button = QPushButton("Agregar proceso")
         self.add_process_button.clicked.connect(self.open_dialog_add_process)
         
-        self.choose_process_button = QPushButton("Escoger proceso")
+        self.choose_process_button = QPushButton("Añadir a preparados")
         self.choose_process_button.setEnabled(False)
         self.choose_process_button.clicked.connect(self.add_prepared_process)
+        
+        self.start_simulation_button = QPushButton("Iniciar simulacion")
+        # self.start_simulation_button.setEnabled(False)
+        self.start_simulation_button.clicked.connect(self.start_simulation)
         
         self.list_inactive_processes = QListWidget()
         self.list_inactive_processes.currentItemChanged.connect(lambda e: self.choose_process_button.setEnabled(True))
@@ -48,12 +56,21 @@ class Simulador(QWidget):
         
         self.layout_add_process.addWidget(self.add_process_button)
         self.layout_add_process.addWidget(self.choose_process_button)
+        self.layout_add_process.addWidget(self.start_simulation_button)
         self.layout_add_process.addWidget(QLabel("PROCESOS INACTIVOS", alignment=Qt.AlignmentFlag.AlignHCenter))
         self.layout_add_process.addWidget(self.list_inactive_processes)
         
-        self.layout_extra_processes.addWidget(self.list_prepared_processes)
-        self.layout_extra_processes.addWidget(self.list_suspended_processes)
-        
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel("PROCESOS PREPARADOS", alignment=Qt.AlignmentFlag.AlignHCenter))
+        layout.addWidget(self.list_prepared_processes)
+
+        layout1 = QVBoxLayout()
+        layout1.addWidget(QLabel("PROCESOS SUSPENDIDOS", alignment=Qt.AlignmentFlag.AlignHCenter))
+        layout1.addWidget(self.list_suspended_processes)
+
+        self.layout_extra_processes.addLayout(layout)
+        self.layout_extra_processes.addLayout(layout1)
+
         self.layout_main_processes.addWidget(QLabel("PROCESOS EN EJECUCION", alignment=Qt.AlignmentFlag.AlignHCenter))
         self.layout_main_processes.addWidget(self.list_running_processes)
         
@@ -64,6 +81,13 @@ class Simulador(QWidget):
         self.layout_main.addWidget(self.table_bcp)
         
         self.setLayout(self.layout_main)
+    
+    def start_simulation(self):
+        self.timer.start(1000)
+    
+    def simulation_tick(self):
+        self.counter_test += 1
+        print(self.counter_test)
         
     def open_dialog_add_process(self):
         dialog = QDialog()

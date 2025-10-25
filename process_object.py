@@ -10,7 +10,9 @@ class Process:
         self.state = "inactivo"
         
     def generate_random_values(self):
-        self.quantum = random.randint(1, 10)
+        cpu_time = random.randint(15, 50)
+        quantum_rate = 5
+        self.quantum = cpu_time // quantum_rate
         self.priority = random.randint(1, 10)
     
     def organize_processes(self, processes):
