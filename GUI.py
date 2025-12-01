@@ -33,6 +33,12 @@ class Simulador(QWidget):
         self.suspended_queue = []  # procesos en espera para reingresar a preparados
         self.cycle_counter = 0
         
+        self.layout_root = QVBoxLayout()
+        
+        self.about = QHBoxLayout()
+        self.label_about = QLabel("Creadores: Deiby Camilo Botina - Juan Diego Juaginoy - Jeison Camilo Diaz - Dario Narvaez © 2025")
+        self.about.addWidget(self.label_about)
+        
         self.layout_main = QHBoxLayout()
         
         self.layout_add_process = QVBoxLayout()
@@ -90,7 +96,9 @@ class Simulador(QWidget):
         self.layout_main.addLayout(self.layout_main_processes)
         self.layout_main.addWidget(self.table_bcp)
         
-        self.setLayout(self.layout_main)
+        self.layout_root.addLayout(self.layout_main)
+        self.layout_root.addLayout(self.about)
+        self.setLayout(self.layout_root)
     
     def start_simulation(self):
         if not self.prepared_processes:

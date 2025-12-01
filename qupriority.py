@@ -13,5 +13,3 @@ cola_prioridad_obj.put((1, 1, 5))
 while not cola_prioridad_obj.empty():
     quantum, prioridad, pid = cola_prioridad_obj.get()
     print(f"Quantum:{quantum}/Prioridad:{prioridad}/PID:{pid}")
-
-
